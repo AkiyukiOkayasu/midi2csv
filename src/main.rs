@@ -17,43 +17,39 @@ struct Note {
 }
 
 /// 出力先フォルダを作成
-fn create_export_folder(path: &PathBuf) -> PathBuf {
-    let mut export_path = path.clone();
+fn create_export_folder(path: &Path) -> PathBuf {
+    let mut export_path = path.to_path_buf();
     export_path.pop();
     export_path.push("export");
-    let metadata = path.clone().metadata().unwrap();
-    assert_eq!(false, metadata.permissions().readonly());
+    let metadata = path.to_path_buf().metadata().unwrap();
+    assert!(metadata.permissions().readonly());
 
     if !export_path.exists() {
-        match create_dir(export_path.as_path()) {
-            Err(e) => eprintln!("Failed on create \"export\" dir : {}", e),
-            Ok(_) => {}
+        if let Err(e) = create_dir(export_path.as_path()) {
+            eprintln!("Failed on create \"export\" dir : {}", e)
         }
     }
     export_path
 }
 
-/// Pathがwavファイルかどうか
+/// PathがMIDIファイルかどうか
 fn is_midi_file(path: &Path) {
-    match path.extension() {
-        Some(x) => {
-            if x.is_empty() {
-                eprintln!("Input file extension is must to be \"mid\" or \"smf\"");
+    if let Some(x) = path.extension() {
+        if x.is_empty() {
+            eprintln!("Input file extension is must to be \"mid\" or \"smf\"");
+            std::process::exit(1);
+        }
+
+        match x.to_str().unwrap() {
+            "mid" => {}
+            "MID" => {}
+            "smf" => {}
+            "SMF" => {}
+            _ => {
+                eprintln!("Input file extension is must to be \"wav\"");
                 std::process::exit(1);
             }
-
-            match x.to_str().unwrap() {
-                "mid" => {}
-                "MID" => {}
-                "smf" => {}
-                "SMF" => {}
-                _ => {
-                    eprintln!("Input file extension is must to be \"wav\"");
-                    std::process::exit(1);
-                }
-            }
         }
-        None => {}
     }
 }
 
