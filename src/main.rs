@@ -67,7 +67,7 @@ fn main() {
 
     is_midi_file(&input); //inputがMIDIファイルか確認
     let input = input.canonicalize().unwrap(); //絶対パスに変換
-    let input_filename = args.input.clone();
+    let input_filename = args.input;
     let input_filename = input_filename.file_stem().unwrap().to_str().unwrap();
 
     // exportフォルダを作成
@@ -97,10 +97,14 @@ fn main() {
         let mut current_position: u32 = 0;
         for e in tr {
             current_position += e.delta.as_int();
-            if let midly::TrackEventKind::Midi { channel, message } = e.kind {
+            if let midly::TrackEventKind::Midi {
+                channel: _channel,
+                message,
+            } = e.kind
+            {
                 match message {
                     //ノートオン
-                    midly::MidiMessage::NoteOn { key, vel } => {
+                    midly::MidiMessage::NoteOn { key, vel: _vel } => {
                         if let Some(n) = note.midi_note_number {
                             let length = current_position - note.start_position;
                             writeln!(w, "{},{},{}", n, note.start_position, length).unwrap();
@@ -111,7 +115,7 @@ fn main() {
                         note.start_position = current_position;
                     }
                     //ノートオフ
-                    midly::MidiMessage::NoteOff { key, vel } => {
+                    midly::MidiMessage::NoteOff { key, vel: _vel } => {
                         if note.midi_note_number.unwrap() == key {
                             let length = current_position - note.start_position;
                             writeln!(
