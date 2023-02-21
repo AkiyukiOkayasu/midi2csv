@@ -2,7 +2,7 @@ use clap::Parser;
 use midly::num::u7;
 use std::fs::{create_dir, File};
 use std::io::{BufWriter, Write};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -18,7 +18,7 @@ struct Note {
 
 /// 出力先フォルダを作成
 fn create_export_folder(path: &PathBuf) -> PathBuf {
-    let mut export_path = PathBuf::from(path.clone());
+    let mut export_path = path.clone();
     export_path.pop();
     export_path.push("export");
     let metadata = path.clone().metadata().unwrap();
@@ -34,7 +34,7 @@ fn create_export_folder(path: &PathBuf) -> PathBuf {
 }
 
 /// Pathがwavファイルかどうか
-fn is_midi_file(path: &PathBuf) {
+fn is_midi_file(path: &Path) {
     match path.extension() {
         Some(x) => {
             if x.is_empty() {
