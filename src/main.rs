@@ -22,7 +22,7 @@ fn create_export_folder(path: &Path) -> PathBuf {
     export_path.pop();
     export_path.push("export");
     let metadata = path.to_path_buf().metadata().unwrap();
-    assert!(metadata.permissions().readonly());
+    assert!(!metadata.permissions().readonly());
 
     if !export_path.exists() {
         if let Err(e) = create_dir(export_path.as_path()) {
