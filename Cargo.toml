@@ -1,10 +1,10 @@
 [package]
 name = "midi2csv"
 authors = ["Akiyuki Okayasu"]
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 rust-version = "1.67.1"
 
 [dependencies]
-clap = { version = "4.0.32", features = ["derive"] }
+clap = { version = "4.1.6", features = ["derive"] }
 midly = "0.5.3"
